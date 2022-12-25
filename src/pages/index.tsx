@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Button from "../components/Button";
 import Form from "../components/Form";
 import Layout from "../components/Layout";
@@ -18,18 +19,31 @@ export default function Home() {
   function clientDeleted(client: Client) {
     console.log(client.name);
   }
+  function saveClient(client: Client) {
+    console.log(client)
+  }
+  const [visible, setVisible] = useState<'table' | 'form'>('table')
   return (
     <div className="flex justify-center items-center h-screen
     bg-gradient-to-r from-blue-500 to-purple-500
     text-white
     ">
       <Layout title="Cadastro Simples">
-        <div className="flex justify-end ">
-          <Button color="green" className="mb-4" >Novo Cliente</Button>
-        </div>
-        <Form client={ClientMock[2]} >
-
-        </Form>
+        {visible === 'table' ? (
+          <>
+            <div className="flex justify-end ">
+              <Button color="green" className="mb-4" onClick={() => setVisible('form')} >
+                Novo Cliente
+              </Button>
+            </div>
+            <Table clients={ClientMock}></Table>
+          </>
+        ) : (
+          <Form
+            client={ClientMock[2]}
+            clientChanged={saveClient}
+            canceled={() => setVisible('table')} />
+        )}
       </Layout>
     </div>
   )
