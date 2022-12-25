@@ -6,6 +6,9 @@ import Table from "../components/Table";
 import Client from "../core/Client";
 
 export default function Home() {
+  const [client, setClient] = useState<Client>(Client.empty())
+  const [visible, setVisible] = useState<'table' | 'form'>('table')
+
   const ClientMock = [
     new Client('Eric', 20, '1'),
     new Client('Felipe', 20, '2'),
@@ -14,15 +17,21 @@ export default function Home() {
   ]
 
   function clientSelected(client: Client) {
-    console.log(client.name);
+    setClient(client)
+    setVisible('form')
   }
   function clientDeleted(client: Client) {
     console.log(client.name);
   }
   function saveClient(client: Client) {
     console.log(client)
+    setVisible('table')
   }
-  const [visible, setVisible] = useState<'table' | 'form'>('table')
+
+  function newClient() {
+    setClient(Client.empty())
+    setVisible('form')
+  }
   return (
     <div className="flex justify-center items-center h-screen
     bg-gradient-to-r from-blue-500 to-purple-500
@@ -32,15 +41,18 @@ export default function Home() {
         {visible === 'table' ? (
           <>
             <div className="flex justify-end ">
-              <Button color="green" className="mb-4" onClick={() => setVisible('form')} >
+              <Button color="green" className="mb-4" onClick={newClient} >
                 Novo Cliente
               </Button>
             </div>
-            <Table clients={ClientMock}></Table>
+            <Table
+              clients={ClientMock}
+              clientSelected={clientSelected}
+              clientDeleted={clientDeleted}></Table>
           </>
         ) : (
           <Form
-            client={ClientMock[2]}
+            client={client}
             clientChanged={saveClient}
             canceled={() => setVisible('table')} />
         )}
